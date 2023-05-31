@@ -1,0 +1,19 @@
+{
+  "name": "my-node-project",
+  "version": "1.0.0",
+  "description": "My Node.js project",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shahzor Ahmad",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^5.5.0",
+    "mongoose": "^7.2.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.22"
+  }
+}
