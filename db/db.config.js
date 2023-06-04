@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 module.exports = function () {
   const db =
-    "mongodb+srv://shahzorahmad90:shahzor123@cluster0.rirci3a.mongodb.net/";
+    "mongodb+srv://shahzorahmad90:shahzor123@cluster0.rirci3a.mongodb.net/node_practice";
 
   mongoose.set("strictQuery", false);
 
