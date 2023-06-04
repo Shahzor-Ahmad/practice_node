@@ -6,25 +6,33 @@ const { studentSchema } = require("../models/students.model");
 const createStudent = (req, res) => {
   const { firstName, lastName, email, age, gender, city, interestedInSports } =
     req.body;
-  const newStudent = new studentSchema({
-    firstName,
-    lastName,
-    email,
-    age,
-    gender,
-    city,
-    interestedInSports,
-  });
 
-  newStudent
-    .save()
-    .then(() => {
-      res.json({ message: "Student Added Successfully" });
-    })
-    .catch((error) => {
-      console.log("there is error while adding student", error);
-      res.status(500).json({ error: "Student Creation Failed" });
-    });
+  studentSchema.findOne({ email }).then((existingStudent) => {
+    if (existingStudent) {
+      // Email already exists
+      res.status(409).json({ error: "This Student already exists" });
+    } else {
+      const newStudent = new studentSchema({
+        firstName,
+        lastName,
+        email,
+        age,
+        gender,
+        city,
+        interestedInSports,
+      });
+
+      newStudent
+        .save()
+        .then(() => {
+          res.json({ message: "Student Added Successfully" });
+        })
+        .catch((error) => {
+          console.log("there is error while adding student", error);
+          res.status(500).json({ error: "Student Creation Failed" });
+        });
+    }
+  });
 };
 
 const getStudents = (req, res) => {
