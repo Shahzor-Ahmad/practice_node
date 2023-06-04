@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { userSignUpSchema, userLoginSchema } = require("../models/user.model");
 
@@ -43,26 +44,35 @@ const createUser = (req, res) => {
 
 // Secret key for JWT
 const secretKey = "shahzor-secret-key";
-const loginUser = (req, res) => {
+
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  // Find the user with the given email and password
-  userLoginSchema
-    .findOne({ email, password })
-    .then((user) => {
-      if (user) {
-        // User found, login successful
-        const token = jwt.sign({ id: user._id }, secretKey);
-        res.json({ message: "Login successful", token });
-      } else {
-        // User not found or password incorrect
-        res.status(401).json({ error: "Invalid email or password" });
-      }
-    })
-    .catch((error) => {
-      console.error("Error during login:", error);
-      res.status(500).json({ error: "Login failed" });
+  try {
+    // Find the user by email
+    const user = await userLoginSchema.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Compare the provided password with the hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: "Incorrect password" });
+    }
+
+    // Password is correct, generate and sign a JWT
+    const token = jwt.sign({ id: user._id }, secretKey, {
+      expiresIn: "1h",
     });
+
+    // Return the token as a response
+    return res.json({ message: "Login successful", token });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 module.exports = { createUser, loginUser };
