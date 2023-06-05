@@ -10,10 +10,9 @@ const connectToDB = require("./db/db.config");
 // Call the connection function
 connectToDB();
 
-// Use user routes
-app.use("/api/user", userRoutes);
-//  Use student routes
-app.use("/api/student", studentRoutes);
+// Use all routes
+app.use( userRoutes, studentRoutes);
+
 
 // saying hello on the browser
 app.get("/", (req, res) => {
