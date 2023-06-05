@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
+const multer = require('multer');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { userSignUpSchema, userLoginSchema } = require("../models/user.model");
@@ -75,4 +76,33 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, loginUser };
+
+// Set the destination folder for uploaded images
+const uploadDirectory = '../uploads';
+
+// Create multer storage configuration
+const storage = multer.diskStorage({
+  destination: uploadDirectory,
+  filename: (req, file, callback) => {
+    const fileName = `${Date.now()}-${file.originalname}`;
+    callback(null, fileName);
+  }
+});
+
+// Create multer upload configuration
+const upload = multer({ storage });
+
+// Upload image handler
+const uploadFile = (req, res) => {
+  // here it shows that the field(key) name should be image in which you send the image as value
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'File upload failed' });
+      return;
+    }
+    res.json({ message: 'Image uploaded successfully' });
+  });
+}
+
+module.exports = { createUser, loginUser, uploadFile };
