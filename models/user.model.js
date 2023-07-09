@@ -25,6 +25,9 @@ const userSignUpSchema = new mongoose.Schema(
 
 const userLoginSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+    },
     email: {
       type: String,
       required: true,
@@ -32,6 +35,9 @@ const userLoginSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    userType: {
+      type: String,
     },
   },
   { collection: "users" }
